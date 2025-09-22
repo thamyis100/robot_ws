@@ -40,9 +40,9 @@ JoystickController::JoystickController()
     std::bind(&JoystickController::pollHandler, this)
   );
 
-  // 6) Twist timer: every 105 ms send /cmd_vel if applicable
+  // 6) Twist timer: every 10 ms send /cmd_vel if applicable
   twist_timer_ = create_wall_timer(
-    50ms,
+    10ms,
     std::bind(&JoystickController::twistTimerHandler, this)
   );
 

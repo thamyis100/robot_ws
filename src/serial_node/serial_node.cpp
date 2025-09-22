@@ -47,7 +47,7 @@ void SerialNode::twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
         // e.g. multiply by 1, or clamp, depending on your units
         si[i] = static_cast<int16_t>(speeds[i] * 1);
     }
-    // 3) Send one command per motor, 25ms apart
+    // 3) Send one command per motor, 1ms apart
     for (uint8_t motor = 1; motor <= 4; ++motor)
     {
         std::string cmd = commander_->formatCommand(motor, si[motor - 1]);
@@ -57,7 +57,7 @@ void SerialNode::twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
                     motor, cmd.c_str());
 
         serial_handler_->sendCommand(cmd);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return;
 }

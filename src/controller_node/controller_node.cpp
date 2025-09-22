@@ -31,7 +31,7 @@ JoystickController::JoystickController()
 
     // 4) Create publishers
   activate_pub_ = create_publisher<std_msgs::msg::Bool>("activate", 10);
-  twist_pub_    = create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);
+  twist_pub_    = create_publisher<geometry_msgs::msg::Twist>("cmd_vel_teleop", 10);
 
   // 5) Poll timer: read JS events at poll_rate_
   auto poll_period = std::chrono::duration<double>(1.0 / poll_rate_);

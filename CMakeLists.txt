@@ -49,11 +49,19 @@ add_executable(serial_node
   src/serial_node/motor_commander.cpp
 )
 
+add_executable(twist_mux
+  src/twist_mux/twist_mux.cpp
+)
+
 add_executable(controller_node
   src/controller_node/controller_node.cpp
 )
 
 target_include_directories(serial_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(twist_mux PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -67,6 +75,10 @@ ament_target_dependencies(serial_node
   geometry_msgs
   Boost
 )
+ament_target_dependencies(twist_mux
+  rclcpp
+  geometry_msgs
+)
 ament_target_dependencies(controller_node
   rclcpp
   std_msgs
@@ -76,6 +88,7 @@ ament_target_dependencies(controller_node
 install(TARGETS
   serial_node
   controller_node
+  twist_mux
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

@@ -45,7 +45,10 @@ void SerialNode::twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     for (size_t i = 0; i < 4; ++i)
     {
         // e.g. multiply by 1, or clamp, depending on your units
-        si[i] = static_cast<int16_t>(speeds[i] * 1);
+         double v = speeds[i];            // scale here if needed: speeds[i] * scale
+         if (v > 1000.0) v = 1000.0;
+         else if (v < -1000.0) v = -1000.0;
+         si[i] = static_cast<int16_t>(v);
     }
     // 3) Send one command per motor, 1ms apart
     for (uint8_t motor = 1; motor <= 4; ++motor)

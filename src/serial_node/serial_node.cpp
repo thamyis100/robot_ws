@@ -39,7 +39,7 @@ void SerialNode::twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     // serial_handler_->sendCommand("aa c7 01 04 0f 00 03 e8 03 00 00 55");
     // serial_handler_->sendCommand("aa c8 01 06 2b 40 60 00 0f 01 00 00 55");
 
-    auto speeds = kinematics_->computeSpeeds(msg->linear.x, msg->linear.y, msg->angular.z);
+    auto speeds = kinematics_->computeSpeeds(msg->linear.y, -msg->linear.x, msg->angular.z);
     // 2) Convert to int16_t (scale as needed)
     std::array<int16_t, 4> si;
     for (size_t i = 0; i < 4; ++i)

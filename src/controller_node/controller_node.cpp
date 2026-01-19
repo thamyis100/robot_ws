@@ -13,7 +13,7 @@ JoystickController::JoystickController()
 {
   // 1) Declare parameters for device path and poll rate
   device_path_ = declare_parameter<std::string>("device", "/dev/input/js0");
-  poll_rate_   = declare_parameter<double>("poll_rate", 100.0);
+  poll_rate_   = declare_parameter<double>("poll_rate", 20.0);
 
   // 2) Open joystick device in non-blocking mode
   fd_ = ::open(device_path_.c_str(), O_RDONLY | O_NONBLOCK);

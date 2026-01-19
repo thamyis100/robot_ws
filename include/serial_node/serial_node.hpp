@@ -1,42 +1,55 @@
-#ifndef SERIAL_NODE_HPP
-#define SERIAL_NODE_HPP
+#pragma once
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
 #include <std_msgs/msg/bool.hpp>
 #include <geometry_msgs/msg/twist.hpp>
+
+#include <memory>
+#include <string>
+#include <array>
+#include <vector>
+
+// Your project headers (keep as in your project)
 #include "serial_handler.hpp"
 #include "mecanum_kinematics.hpp"
 #include "motor_commander.hpp"
-#include <memory>
-#include <string>
 
-class SerialNode : public rclcpp::Node {
+class SerialNode : public rclcpp::Node
+{
 public:
-    SerialNode();
-    ~SerialNode();
+  SerialNode();
+  ~SerialNode() override = default;
 
 private:
-    void twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
-    void boolCallback(const std_msgs::msg::Bool::SharedPtr msg);
+  void twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
+  void boolCallback(const std_msgs::msg::Bool::SharedPtr msg);
 
-    // Parameters
-    std::string port_name_;
-    int baud_rate_;
-    double wheel_radius_, base_length_, base_width_;
+  void sendFourMotors(const std::array<int16_t, 4>& pwm);
 
-    // ROS interfaces
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
-    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr bool_sub_;
+private:
+  // Parameters
+  std::string port_name_;
+  int baud_rate_;
+  double wheel_radius_;
+  double base_length_;
+  double base_width_;
 
-    // Modules
-    std::unique_ptr<SerialHandler> serial_handler_;
-    std::unique_ptr<MecanumKinematics> kinematics_;
-    std::unique_ptr<MotorCommander> commander_;
+  double max_pwm_;            // clamp target PWM
+  double smoothing_alpha_;    // 0..1
+  std::array<int, 4> motor_sign_{ {1, 1, 1, 1} }; // per-wheel sign invert
 
-    //BOOST.ASIO
-    std::mutex serial_mutex_;
+  // ROS pub/sub
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr bool_sub_;
+
+  // Helpers
+  std::unique_ptr<MecanumKinematics> kinematics_;
+  std::unique_ptr<MotorCommander> commander_;
+  std::unique_ptr<SerialHandler> serial_handler_;
+
+  // State
+  std::array<double, 4> last_pwm_{ {0, 0, 0, 0} };
+  bool active_{true};
 };
-
-#endif // SERIAL_NODE_HPP

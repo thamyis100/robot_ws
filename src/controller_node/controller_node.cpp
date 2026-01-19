@@ -87,8 +87,8 @@ void JoystickController::twistTimerHandler()
   // A button held → use left stick
   if (buttons_[BUTTON_A]) {
     geometry_msgs::msg::Twist t;
-    t.linear.x  = axes_[AXIS_LY] * 1000;
-    t.linear.y  = axes_[AXIS_LX] * 1000;
+    t.linear.x  = - axes_[AXIS_LY] * 1000;
+    t.linear.y  = - axes_[AXIS_LX] * 1000;
     t.angular.z = 0.0;
     twist_pub_->publish(t);
     return;

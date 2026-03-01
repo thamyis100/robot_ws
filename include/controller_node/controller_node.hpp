@@ -14,6 +14,7 @@ public:
   JoystickController();
 
 private:
+  bool openDevice();
   void pollHandler();        // read joystick events
   void twistTimerHandler();  // publish /cmd_vel periodically
 
@@ -26,12 +27,14 @@ private:
 
   rclcpp::TimerBase::SharedPtr poll_timer_;
   rclcpp::TimerBase::SharedPtr twist_timer_;
+  rclcpp::TimerBase::SharedPtr reconnect_timer_;
 
   bool prev_y_pressed_ = false;
   bool activate_state_ = false;
 
   std::string device_path_;
   double      poll_rate_;
+  bool        allow_no_device_;
 
   // mapping indices
   static constexpr int BUTTON_Y = 3;

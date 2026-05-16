@@ -12,11 +12,11 @@ SerialNode::SerialNode()
   baud_rate_    = declare_parameter<int>("baudrate", 2000000);
 
   wheel_radius_ = declare_parameter<double>("wheel_radius", 1.0);
-  base_length_  = declare_parameter<double>("base_length", 0.3);
-  base_width_   = declare_parameter<double>("base_width", 0.2);
+  base_length_  = declare_parameter<double>("base_length", 0.5);
+  base_width_   = declare_parameter<double>("base_width", 0.5);
 
   // Option B smoothing
-  max_pwm_         = declare_parameter<double>("max_pwm", 2000.0);
+  max_pwm_         = declare_parameter<double>("max_pwm", 5000.0);
   smoothing_alpha_ = declare_parameter<double>("smoothing_alpha", 0.2); // 0..1
 
   // Per-motor direction (set -1 for reversed motor)
@@ -74,7 +74,7 @@ void SerialNode::twistCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
 
   // Your mapping: computeSpeeds(vx, vy, wz)
   // (keep same as your original)
-  auto speeds = kinematics_->computeSpeeds(-msg->linear.y, msg->linear.x, msg->angular.z);
+  auto speeds = kinematics_->computeSpeeds(msg->linear.y, -msg->linear.x, msg->angular.z);
 
   std::array<double, 4> target{};
   for (size_t i = 0; i < 4; ++i)
